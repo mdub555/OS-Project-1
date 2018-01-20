@@ -74,8 +74,14 @@ int Shell::loop_and_handle_input() {
 
 
 string Shell::get_prompt(int return_value) {
-  // TODO: YOUR CODE GOES HERE
-  return "prompt > "; // replace with your own code
+  // The prompt will always have the username first
+  string prompt = getenv("USER");
+  // Depending on the previous exit code
+  // May not be done right, I don't know how the error codes work yet. Maybe shouldn't have dont
+  // this first before I could test it with other child processes
+  if (errno == 0) prompt += " :) > ";
+  else prompt += " :( > ";
+  return prompt; // replace with your own code
 }
 
 
