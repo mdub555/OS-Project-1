@@ -59,7 +59,7 @@ int Shell::com_history(vector<string>& argv) {
 
 
 int Shell::com_exit(vector<string>& argv) {
-  // TODO: YOUR CODE GOES HERE
-  cout << "exit called" << endl; // delete when implemented
+  // exit the program entirely
+  exit(EXIT_SUCCESS);
   return 0;
 }
