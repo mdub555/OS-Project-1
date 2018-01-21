@@ -24,8 +24,8 @@ int Shell::com_cd(vector<string>& argv) {
 
 
 int Shell::com_pwd(vector<string>& argv) {
-  // TODO: YOUR CODE GOES HERE
-  cout << "pwd called" << endl; // delete when implemented
+  // print out the environment variable "PWD"
+  cout << getenv("PWD") << endl;
   return 0;
 }
 
