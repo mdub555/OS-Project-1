@@ -14,28 +14,16 @@ int Shell::com_ls(vector<string>& argv) {
   DIR           *dirp;
   struct dirent *directory;
 
-  // get the current directory
-  string dirToOpen = getenv("PWD");
-  // error check getenv()
-  if (errno != 0) {
-    perror("The following error occured");
-    return errno;
-  }
-
-  if (argv.size() > 1) {
+  string dirToOpen = ".";
+  if (argv.size() <= 1) {
+    dirToOpen = ".";
+  } else if (argv.size() > 2) {
     // only allow one argument maximum
-    if (argv.size() > 2) {
-      cout << "The following error occured: Too many arguments." << endl;
-      return -1;
-    }
-    // if the argument is an absolute path, set that as the directory to open
-    if (argv[1][0] == '/') {
-      dirToOpen = argv[1];
-    // else, add it to the end of the path for a relative path
-    } else {
-      dirToOpen += "/";
-      dirToOpen += argv[1];
-    }
+    cout << "The following error occured: Too many arguments." << endl;
+    return -1;
+  } else {
+    // set the path to the argument
+    dirToOpen = argv[1];
   }
 
   dirp = opendir(dirToOpen.c_str());
