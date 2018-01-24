@@ -6,6 +6,7 @@
 #include "shell.h"
 #include <iostream>
 #include <dirent.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -14,7 +15,7 @@ int Shell::com_ls(vector<string>& argv) {
   DIR           *dirp;
   struct dirent *directory;
 
-  string dirToOpen = ".";
+  string dirToOpen;
   if (argv.size() <= 1) {
     dirToOpen = ".";
   } else if (argv.size() > 2) {
@@ -53,9 +54,42 @@ int Shell::com_ls(vector<string>& argv) {
 
 
 int Shell::com_cd(vector<string>& argv) {
-  // TODO: YOUR CODE GOES HERE
-  cout << "cd called" << endl; // delete when implemented
-  return 0;
+  string dir;
+  if (argv.size() == 1) {
+    // set next directory to be the home directory
+    dir = getenv("HOME");
+    if (errno != 0) {
+      perror("The following error occured");
+      return errno;
+    }
+  } else if (argv.size() > 2) {
+    // error for too many arguments
+    cout << "The following error occured: too many arguments." << endl;
+    return -1;
+  } else {
+    dir = argv[1];
+  }
+
+  // change directory
+  chdir(dir.c_str());
+  if (errno != 0) {
+    perror("The following error occured");
+    return errno;
+  }
+
+  // get the expanded working directory for PWD
+  char cwd[256];
+  if (getcwd(cwd, sizeof(cwd)) == NULL) {
+    perror("The following error occured");
+    return errno;
+  }
+  // set the PWD environment variable to the correct thing
+  setenv("PWD", cwd, 1);
+  if (errno != 0) {
+    perror("The following error occured");
+  }
+
+  return errno;
 }
 
 
