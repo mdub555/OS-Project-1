@@ -88,6 +88,7 @@ int Shell::execute_line(char* line) {
   // HINT: leverage readline! This should only be a couple lines of code.
 
   // TODO: save the command to history (again, leverage readline!)
+  add_history(line);
 
   // Tokenize the input string.
   vector<string> tokens = tokenize_input(line);

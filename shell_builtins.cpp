@@ -7,6 +7,7 @@
 #include <iostream>
 #include <dirent.h>
 #include <unistd.h>
+#include <readline/history.h>
 
 using namespace std;
 
@@ -130,8 +131,15 @@ int Shell::com_echo(vector<string>& argv) {
 
 
 int Shell::com_history(vector<string>& argv) {
-  // TODO: YOUR CODE GOES HERE
-  cout << "history called" << endl; // delete when implemented
+  // get the list of previous commands
+  HIST_ENTRY ** hist = history_list();
+  // history_list() returns NULL if empty
+  if (hist) {
+    // the history list ends in NULL, so we can loop like this with an iterator
+    for (int i = 0; hist[i]; i++) {
+      cout << i + history_base << " " << hist[i]->line << endl;
+    }
+  }
   return 0;
 }
 
