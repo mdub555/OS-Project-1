@@ -77,7 +77,7 @@ string Shell::get_prompt(int return_value) {
   // The prompt will always have the username first
   string prompt = getenv("USER");
   // Depending on the previous exit code
-  if (errno == 0) prompt += " :) > ";
+  if (return_value == 0) prompt += " :) > ";
   else prompt += " :( > ";
   return prompt; // replace with your own code
 }
@@ -87,7 +87,7 @@ int Shell::execute_line(char* line) {
   // TODO: expand the command from history using !!, !-N, etc
   // HINT: leverage readline! This should only be a couple lines of code.
 
-  // TODO: save the command to history (again, leverage readline!)
+  // save the command to history
   add_history(line);
 
   // Tokenize the input string.

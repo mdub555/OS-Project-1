@@ -21,7 +21,7 @@ int Shell::com_ls(vector<string>& argv) {
     dirToOpen = ".";
   } else if (argv.size() > 2) {
     // only allow one argument maximum
-    cout << "The following error occured: Too many arguments." << endl;
+    cout <<  __FUNCTION__ << ": Too many arguments." << endl;
     return -1;
   } else {
     // set the path to the argument
@@ -31,7 +31,7 @@ int Shell::com_ls(vector<string>& argv) {
   dirp = opendir(dirToOpen.c_str());
   // error check opendir
   if (errno != 0) {
-    perror("The following error occured");
+    perror(__FUNCTION__);
     return errno;
   }
 
@@ -39,14 +39,14 @@ int Shell::com_ls(vector<string>& argv) {
     while ((directory = readdir(dirp)) != NULL) {
       // error check readdir
       if (errno != 0) {
-        perror("The following error occured");
+        perror(__FUNCTION__);
         return errno;
       }
       cout << directory->d_name << endl;
     }
     closedir(dirp);
     if (errno != 0) {
-      perror("The following error occured");
+      perror(__FUNCTION__);
       return errno;
     }
   }
@@ -60,12 +60,12 @@ int Shell::com_cd(vector<string>& argv) {
     // set next directory to be the home directory
     dir = getenv("HOME");
     if (errno != 0) {
-      perror("The following error occured");
+      perror(__FUNCTION__);
       return errno;
     }
   } else if (argv.size() > 2) {
     // error for too many arguments
-    cout << "The following error occured: too many arguments." << endl;
+    cout << __FUNCTION__ << ": too many arguments." << endl;
     return -1;
   } else {
     dir = argv[1];
@@ -74,20 +74,20 @@ int Shell::com_cd(vector<string>& argv) {
   // change directory
   chdir(dir.c_str());
   if (errno != 0) {
-    perror("The following error occured");
+    perror(__FUNCTION__);
     return errno;
   }
 
   // get the expanded working directory for PWD
   char cwd[256];
   if (getcwd(cwd, sizeof(cwd)) == NULL) {
-    perror("The following error occured");
+    perror(__FUNCTION__);
     return errno;
   }
   // set the PWD environment variable to the correct thing
   setenv("PWD", cwd, 1);
   if (errno != 0) {
-    perror("The following error occured");
+    perror(__FUNCTION__);
   }
 
   return errno;
@@ -100,7 +100,7 @@ int Shell::com_pwd(vector<string>& argv) {
   if (errno == 0) {
     cout << pwd << endl;
   } else {
-    perror("The following error occured");
+    perror(__FUNCTION__);
   }
   return errno;
 }
