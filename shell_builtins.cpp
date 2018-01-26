@@ -11,44 +11,50 @@
 
 using namespace std;
 
+int get_current_directory(string& return_string) {
+  char cwd[256];
+  if (getcwd(cwd, sizeof(cwd)) == NULL) {
+    perror(__FUNCTION__);
+    return errno;
+  }
+  return_string = (string)cwd;
+  return 0;
+}
+
 
 int Shell::com_ls(vector<string>& argv) {
-  DIR           *dirp;
-  struct dirent *directory;
-
+  // set the directory to open
   string dirToOpen;
-  if (argv.size() <= 1) {
-    dirToOpen = ".";
+  if (argv.size() == 1) {
+    // get the current directory, returning not 0 is an error
+    int err = get_current_directory(dirToOpen);
+    if (err != 0) {
+      return err;
+    }
   } else if (argv.size() > 2) {
     // only allow one argument maximum
-    cout <<  __FUNCTION__ << ": Too many arguments." << endl;
+    cerr <<  __FUNCTION__ << ": Too many arguments." << endl;
     return -1;
   } else {
     // set the path to the argument
     dirToOpen = argv[1];
   }
 
+  // open and read the directory
+  DIR           *dirp;
+  struct dirent *directory;
   dirp = opendir(dirToOpen.c_str());
-  // error check opendir
-  if (errno != 0) {
-    perror(__FUNCTION__);
-    return errno;
-  }
-
   if (dirp) {
     while ((directory = readdir(dirp)) != NULL) {
-      // error check readdir
-      if (errno != 0) {
-        perror(__FUNCTION__);
-        return errno;
-      }
       cout << directory->d_name << endl;
     }
-    closedir(dirp);
-    if (errno != 0) {
+    if (closedir(dirp) != 0) {
       perror(__FUNCTION__);
       return errno;
     }
+  } else {
+    perror(__FUNCTION__);
+    return errno;
   }
   return 0;
 }
@@ -58,51 +64,46 @@ int Shell::com_cd(vector<string>& argv) {
   string dir;
   if (argv.size() == 1) {
     // set next directory to be the home directory
-    dir = getenv("HOME");
-    if (errno != 0) {
-      perror(__FUNCTION__);
-      return errno;
+    char* tempDir = getenv("HOME");
+    if (tempDir == NULL) {
+      cerr << __FUNCTION__ << ": HOME environment variable not found." << endl;
+      return -1;
     }
+    dir = tempDir;
   } else if (argv.size() > 2) {
     // error for too many arguments
-    cout << __FUNCTION__ << ": too many arguments." << endl;
+    cerr << __FUNCTION__ << ": too many arguments." << endl;
     return -1;
   } else {
     dir = argv[1];
   }
 
   // change directory
-  chdir(dir.c_str());
-  if (errno != 0) {
+  int ret = chdir(dir.c_str());
+  if (ret != 0) {
     perror(__FUNCTION__);
     return errno;
   }
 
-  // get the expanded working directory for PWD
-  char cwd[256];
-  if (getcwd(cwd, sizeof(cwd)) == NULL) {
-    perror(__FUNCTION__);
-    return errno;
-  }
-  // set the PWD environment variable to the correct thing
-  setenv("PWD", cwd, 1);
-  if (errno != 0) {
-    perror(__FUNCTION__);
-  }
-
-  return errno;
+  return 0;
 }
 
 
 int Shell::com_pwd(vector<string>& argv) {
-  // print out the environment variable "PWD"
-  string pwd = getenv("PWD");
-  if (errno == 0) {
-    cout << pwd << endl;
-  } else {
-    perror(__FUNCTION__);
+  // check for too many arguments
+  if (argv.size() > 1) {
+    cerr << __FUNCTION__ << ": Too many arguments." << endl;
+    return -1;
   }
-  return errno;
+  // get the current directory and print it out
+  string cwd;
+  if (get_current_directory(cwd) == 0) {
+    cout << cwd << endl;
+  } else {
+    cerr << __FUNCTION__ << ": something went wrong" << endl;
+    return -1;
+  }
+  return 0;
 }
 
 
@@ -131,6 +132,11 @@ int Shell::com_echo(vector<string>& argv) {
 
 
 int Shell::com_history(vector<string>& argv) {
+  // check for too many arguments
+  if (argv.size() > 1) {
+    cerr << __FUNCTION__ << ": Too many arguments." << endl;
+    return -1;
+  }
   // get the list of previous commands
   HIST_ENTRY ** hist = history_list();
   // history_list() returns NULL if empty
