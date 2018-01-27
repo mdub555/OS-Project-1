@@ -151,7 +151,12 @@ void Shell::local_variable_assignment(vector<string>& tokens) {
 
 
 void Shell::alias_substitution(vector<string>& tokens) {
-  // TODO: implement alias handling
+  vector<string>::iterator token;
+  for (token = tokens.begin(); token != tokens.end(); token++) {
+    if (aliases.count(*token) > 0) {
+      *token = aliases.at(*token);
+    }
+  }
 }
 
 

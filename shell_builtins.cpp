@@ -108,15 +108,57 @@ int Shell::com_pwd(vector<string>& argv) {
 
 
 int Shell::com_alias(vector<string>& argv) {
-  // TODO: YOUR CODE GOES HERE
-  cout << "alias called" << endl; // delete when implemented
+  // if no arguments are given, print all current aliases
+  if (argv.size() == 1) {
+    map<string, string>::iterator it;
+    for (it = aliases.begin(); it != aliases.end(); it++) {
+      cout << it->first << "=" << it->second << endl;
+    }
+  }
+  for (size_t i = 1; i < argv.size(); i++) {
+  //while (token != tokens.end()) {
+    string::size_type eq_pos = argv[i].find("=");
+
+    // Failure at the first token not in the form: key=value.
+    if (eq_pos == string::npos) {
+      cerr << __FUNCTION__ << ": Incorrect alias format." << endl;
+      return -1;
+    }
+
+    // get the key value pair
+    string key = argv[i].substr(0, eq_pos);
+    string value = argv[i].substr(eq_pos + 1);
+    // add it to the alias map
+    if (aliases.count(key) > 0) { // overwrite the value
+      aliases.at(key) = value;
+    } else {                      // add a new key value pair
+      aliases.insert( pair<string, string>(key, value) );
+    }
+  }
+
   return 0;
 }
 
 
 int Shell::com_unalias(vector<string>& argv) {
-  // TODO: YOUR CODE GOES HERE
-  cout << "unalias called" << endl; // delete when implemented
+  // needs exactly 1 argument (not including unalias itself)
+  if (argv.size() != 2) {
+    cerr << __FUNCTION__ << ": Incorrect amount of arguments." << endl;
+    return -1;
+  }
+
+  if (argv[1] == "-a") {
+    aliases.clear();
+  } else {
+    // since the alias will have been expanded by now, must search for the value to erase it
+    map<string, string>::iterator it;
+    for (it = aliases.begin(); it != aliases.end(); it++) {
+      if (it->second == argv[1]) {
+        aliases.erase(it->first);
+        break;
+      }
+    }
+  }
   return 0;
 }
 
