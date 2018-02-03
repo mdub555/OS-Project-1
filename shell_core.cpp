@@ -84,8 +84,12 @@ string Shell::get_prompt(int return_value) {
 
 
 int Shell::execute_line(char* line) {
-  // TODO: expand the command from history using !!, !-N, etc
-  // HINT: leverage readline! This should only be a couple lines of code.
+  // expand the command from history using !!, !-N, etc
+  int result = history_expand(line, &line);
+  // will only return 0 if nothing is expanded, output the command or the error
+  if (result) cerr << line << endl;
+  // don't continue if an error occured
+  if (result < 0 || result == 2) return -1;
 
   // save the command to history
   add_history(line);
