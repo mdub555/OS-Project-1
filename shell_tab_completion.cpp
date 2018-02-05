@@ -51,22 +51,20 @@ void Shell::get_env_completions(const char* text, vector<string>& matches) {
 void Shell::get_command_completions(const char* text, vector<string>& matches) {
   string textString = text;
   // add the builtin commands
-  map<string, builtin_t>::iterator it1;
   // loop through all builtins
-  for (it1 = builtins.begin(); it1 != builtins.end(); it1++) {
+  for (map<string, builtin_t>::iterator it = builtins.begin(); it != builtins.end(); it++) {
     // check if it matches the string so far
-    if (!it1->first.compare(0, textString.size(), textString)) {
-      matches.push_back(it1->first);
+    if (!it->first.compare(0, textString.size(), textString)) {
+      matches.push_back(it->first);
     }
   }
 
   // add the aliases
-  map<string, string>::iterator it2;
   // loop through all the aliases
-  for (it2 = aliases.begin(); it2 != aliases.end(); it2++) {
+  for (map<string, string>::iterator it = aliases.begin(); it != aliases.end(); it++) {
     // check if it mathces the string so far
-    if (!it2->first.compare(0, textString.size(), textString)) {
-      matches.push_back(it2->first);
+    if (!it->first.compare(0, textString.size(), textString)) {
+      matches.push_back(it->first);
     }
   }
 
