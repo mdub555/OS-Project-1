@@ -158,12 +158,12 @@ char* Shell::pop_match(vector<string>& matches) {
   if (matches.size() > 0) {
     const char* match = matches.back().c_str();
 
-    // Delete the last element.
-    matches.pop_back();
-
     // We need to return a copy, because readline deallocates when done.
     char* copy = (char*) malloc(strlen(match) + 1);
     strcpy(copy, match);
+
+    // Delete the last element.
+    matches.pop_back();
 
     return copy;
   }
