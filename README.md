@@ -7,4 +7,4 @@ Your final submission must contain a README file with the following:
  * Approximate number of hours you spent on the project.
 
 ## Graded
-* Score deliverable-1: 82/82
+* Score deliverable-1: 20/20
