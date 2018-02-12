@@ -30,6 +30,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "command.h"
 
 
 /**
@@ -291,6 +292,18 @@ private:
    * @return The return code of the operation
    */
   int execute_external_command(std::vector<std::string>& argv);
+
+  /**
+   * Partitions the given vector of tokens into one or more commands based on
+   * the position of pipes or file redirects.
+   *
+   * @param tokens The tokens to partition
+   * @param commands The vector to fill with the partitioned commands
+   * @return true if successfully partitioned; false otherwise
+   */
+  bool partition_tokens(
+          std::vector<std::string> tokens,
+          std::vector<command_t>& commands);
 
 // CONSTANTS AND MEMBERS (shell_core.cpp)
 private:
