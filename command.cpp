@@ -29,17 +29,10 @@ bool Shell::partition_tokens(vector<string> tokens, vector<command_t>& commands)
   }
 
   // check for multiple delimeters next to each other
-  bool prevDelim = false;
-  for (unsigned int i = 0; i < tokens.size(); i++) {
-    if (find(begin, end, tokens[i]) != end) {  // found delimeter
-      if (prevDelim) {                         // if we just saw a delimeter
-        cerr << "Two pipes or redirects in a row" << endl;
-        return false;
-      } else {                                 // we haven't just seen a delimeter
-        prevDelim = true;
-      }
-    } else {                                   // didn't find a delimeter
-      prevDelim = false;
+  for (unsigned int i = 0; i < tokens.size()-1; i++) {
+    if ((find(begin, end, tokens[i]) != end) && (find(begin, end, tokens[i+1]) != end)) {
+      cerr << "Two pipes or redirects in a row" << endl;
+      return false;
     }
   }
 
