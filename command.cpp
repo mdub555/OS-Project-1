@@ -49,20 +49,17 @@ bool Shell::partition_tokens(vector<string> tokens, vector<command_t>& commands)
       }
       cmd.output_type = OutputType::WRITE_TO_PIPE;   // set output to go to pipe
       commands.push_back(cmd);                       // add command to vector of commands
-      cmd.argv.clear();                              // clear the command for the next command
+      cmd = command_t();                             // set cmd back to default
       cmd.input_type = InputType::READ_FROM_PIPE;    // set input based on pipe
-      cmd.output_type = OutputType::WRITE_TO_STDOUT; // set output back to default
-      cmd.infile = "";                               // reset the input file
-      cmd.outfile = "";                              // reset the output file
     } else if (tokens[i] == delims[1]) { // found an input file `<`
-      if (cmd.infile != "" || cmd.input_type == InputType::READ_FROM_PIPE) { // already have an input
+      if (cmd.input_type != InputType::READ_FROM_STDIN) { // already have an input
         cerr << "Too many inputs" << endl;
         return false;
       }
       cmd.input_type = InputType::READ_FROM_FILE;    // set input to read from file
       cmd.infile = tokens[++i];                      // set input file and skip next token
     } else { // writing or appending to file
-      if (cmd.outfile != "") {                       // the command already has an output file
+      if (cmd.output_type != OutputType::WRITE_TO_STDOUT) { // already have an output
         cout << "Too many output files" << endl;
         return false;
       }
