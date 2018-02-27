@@ -53,6 +53,6 @@ This shell program has all the standard features. No extra features or functiona
 | _Total_                              | 17 hours |
 
 ## Graded
-* Score tag final: 154/160
-* Score Total: 194/200
-* Tab completion doesn't work for executables on $PATH -6
+* Score tag final: 160/160
+* Score Total: 200/200
+* ~~Tab completion doesn't work for executables on $PATH -6~~
